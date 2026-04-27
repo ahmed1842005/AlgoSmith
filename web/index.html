@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlgoSmith</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- SPLASH -->
+    <div id="splash" class="splash">
+        <div class="splash-content">
+            <h1 class="splash-logo">
+                <span class="letter" style="--i:0">A</span>
+                <span class="letter" style="--i:1">L</span>
+                <span class="letter" style="--i:2">G</span>
+                <span class="letter" style="--i:3">O</span>
+                <span class="letter" style="--i:4">S</span>
+                <span class="letter" style="--i:5">M</span>
+                <span class="letter" style="--i:6">I</span>
+                <span class="letter" style="--i:7">T</span>
+                <span class="letter" style="--i:8">H</span>
+            </h1>
+            <div class="splash-loader-circle"></div>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div id="app" class="app hidden">
+        
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-algo">algo</span><span class="logo-smith">Smith</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <span class="complexity-badge" id="complexity-badge">—</span>
+                <button id="quit-btn" class="quit-btn">Quit</button>
+            </div>
+        </header>
+
+        <!-- SPLIT PANE -->
+        <div class="split-pane">
+            <!-- LEFT: CODE EDITOR -->
+            <div class="pane left-pane">
+                <div class="pane-header">
+                    <span>Code Editor</span>
+                    <div class="selector-wrapper">
+                        <select id="algorithm" class="animated-select">
+                            <option value="custom">Type your own...</option>
+                            <option value="array-index-access">Array Index Access</option>
+                            <option value="linear-search">Linear Search</option>
+                            <option value="merge-sort">Merge Sort</option>
+                            <option value="bubble-sort">Bubble Sort</option>
+                            <option value="matrix-mult">Naive Matrix Multiplication</option>
+                            <option value="fibonacci">Recursive Fibonacci</option>
+                        </select>
+                        <div class="select-arrow">
+                            <svg width="10" height="10" viewBox="0 0 10 6" fill="none">
+                                <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <button id="run-btn" class="run-btn">
+                        <svg id="run-icon" width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M4 2.5v11l9-5.5-9-5.5z"/>
+                        </svg>
+                        Run
+                    </button>
+                </div>
+                <div class="editor-container">
+                    <textarea id="code" spellcheck="false"></textarea>
+                </div>
+                <div class="pane-footer">
+                    <div class="mode-toggle">
+                        <button id="auto-btn" class="mode-btn active" data-mode="auto">Auto</button>
+                        <button id="manual-btn" class="mode-btn" data-mode="manual">Manual</button>
+                    </div>
+                    <input id="input-data" type="text" class="input-field hidden" placeholder="e.g. 5, 3, 8, 1, 9">
+                </div>
+            </div>
+
+            <!-- RESIZER -->
+            <div class="resizer" id="resizer"></div>
+
+            <!-- RIGHT: ANALYSIS -->
+            <div class="pane right-pane">
+                <div class="tabs">
+                    <button class="tab active" data-tab="chart">Chart</button>
+                    <button class="tab" data-tab="ai">AI</button>
+                    <button class="tab" data-tab="optimizer">Optimizer</button>
+                </div>
+                <div class="tab-content">
+                    <div id="chart" class="tab-panel active">
+                        <div class="empty-state">
+                            <div class="empty-title">No data yet</div>
+                            <div class="empty-sub">Run an algorithm to see complexity chart</div>
+                        </div>
+                    </div>
+                    <div id="ai" class="tab-panel">
+                        <div id="ai-result" class="result-body">Waiting for analysis...</div>
+                    </div>
+                    <div id="optimizer" class="tab-panel">
+                        <div id="opt-result" class="result-body">Waiting for analysis...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATUS BAR -->
+        <div class="status-bar">
+            <span id="status-text">Ready</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    <script src="eel.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
