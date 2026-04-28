@@ -1,5 +1,5 @@
-import anthropic
 import os
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,52 +9,55 @@ Your job is to analyze the user's Python function and determine whether it can b
 You must follow these rules strictly:
 
 1. Carefully analyze the current algorithm and identify its true time complexity.
-2. Determine whether a better asymptotic complexity is realistically possible. Focus on actual algorithmic improvement (Big-O improvement), not only cleaner syntax or minor micro-optimizations.
+2. Determine whether a better asymptotic complexity is realistically possible.
 3. If the code can be improved:
-   * Generate a new optimized version of the code with the best practical time complexity.
-   * Preserve the original functionality and expected output exactly.
-   * Use clear, production-quality Python code.
-   * Prefer readability and correctness over unnecessary cleverness.
-   * Do not include explanations before the code.
-4. Before the optimized code, convert the user's original code into commented lines by prefixing every line with #.
-5. After the commented original code, write the optimized version directly below it.
-6. If the current code is already asymptotically optimal and no meaningful Big-O improvement is possible:
-   * Do NOT rewrite the code.
-   * Keep the original code as commented lines.
-   * Below it, write exactly this message as Python comments:
+   - Generate optimized Python code.
+   - Preserve functionality.
+   - Do not explain outside comments.
+4. If already optimal:
+   - Keep original as comments.
+   - Add:
      # This code is already optimized for its problem.
      # No better asymptotic time complexity improvement is realistically possible.
-7. Do not use markdown.
-8. Do not use code fences.
-9. Do not explain your reasoning outside Python comments.
-10. Return only valid Python-formatted output suitable for directly inserting into the GUI code editor."""
+5. Do not use markdown or code fences.
+6. Return only Python-formatted output.
+"""
 
-model_name = os.getenv("MODEL_NAME")
-maximium_Tokens = int(os.getenv("MAX_TOKENS"))
+# Load API key from .env
+API_KEY = os.getenv("OPENROUTER_API_KEY")
+
+MODEL_NAME = os.getenv("MODEL_NAME")
+
+maximum_tokens = int(os.getenv("MAX_TOKENS"))
 
 def optimize(user_code: str):
+    url = "https://openrouter.ai/api/v1/chat/completions"
 
-    user_message = f"User code to analyze:\n{user_code}"
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "model": MODEL_NAME,
+        "messages": [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": f"Analyze and optimize this code:\n\n{user_code}"}
+        ],
+        "temperature": 0.2,
+        "max_tokens": maximum_tokens
+    }
 
     try:
-        client = anthropic.Anthropic()
+        response = requests.post(url, headers=headers, json=payload)
+        result = response.json()
 
-        message = client.messages.create(
-            model= model_name,
-            max_tokens= maximium_Tokens,
-            system=SYSTEM_PROMPT,
-            messages=[
-                {"role": "user", "content": user_message}
-            ]
-        )
+        # Success case
+        if "choices" in result:
+            return result["choices"][0]["message"]["content"]
 
-        return message.content[0].text
-        
-    except anthropic.AuthenticationError:
-        return "Error: API key is missing or invalid. Check your .env file."
-
-    except anthropic.RateLimitError:
-        return "Error: Rate limit reached. Please wait a moment and try again."
+        # Error case (very important for debugging)
+        return f"Error from API: {result}"
 
     except Exception as e:
-        return f"Error: Could not fetch optimization: {e}"
+        return f"Request failed: {str(e)}"

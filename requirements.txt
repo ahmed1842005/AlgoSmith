@@ -1,3 +1,6 @@
 eel
 anthropic
 dotenv
+google-generativeai
+python-dotenv
+requests

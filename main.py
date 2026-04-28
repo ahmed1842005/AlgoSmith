@@ -11,9 +11,8 @@ def run_algorithm(algorithm, code, input_data):
 
 def main():
     load_dotenv()
-    api_key = os.getenv("ANTHROPIC_API_KEY")
     eel.init("web")
-    eel.start("index.html", size=(1400, 850))
+    eel.start("index.html", size=(1400, 850), port=8000)
 
 
 if __name__ == "__main__":
