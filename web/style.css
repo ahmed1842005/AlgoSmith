@@ -404,3 +404,177 @@ button, select, input, textarea { font: inherit; }
     color: var(--accent);
     transform: rotate(180deg);
 }
+
+/* ── ANALYSIS TAB STYLES ─────────────────────────────────────── */
+.analysis-section {
+    margin-bottom: 28px;
+}
+
+.section-label-sm {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-family: var(--mono);
+}
+
+.complexity-hero {
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: var(--mono);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.complexity-subtitle {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 16px;
+}
+
+.confidence-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+}
+
+.confidence-bar-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 187, 90, 0.12);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.confidence-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.8s ease;
+}
+
+/* Candidate bars */
+.candidate-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-family: var(--mono);
+}
+
+.candidate-label {
+    width: 80px;
+    color: var(--text2);
+    flex-shrink: 0;
+}
+
+.candidate-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.candidate-fill {
+    height: 100%;
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.6s ease;
+}
+
+.candidate-fill.winner {
+    background: var(--accent);
+}
+
+.candidate-fill.other {
+    background: rgba(255, 187, 90, 0.3);
+}
+
+.candidate-pct {
+    width: 36px;
+    text-align: right;
+    color: var(--text3);
+    font-size: 11px;
+}
+
+/* Case summary */
+.case-summary {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.case-card {
+    flex: 1;
+    background: rgba(255, 187, 90, 0.06);
+    border: 1px solid rgba(255, 187, 90, 0.14);
+    border-radius: var(--r);
+    padding: 12px;
+    text-align: center;
+}
+
+.case-card-label {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-family: var(--mono);
+}
+
+.case-card-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: var(--mono);
+}
+
+/* AI Agent tab */
+.ai-agent-output {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 187, 90, 0.12);
+    border-radius: var(--r);
+    padding: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    font-family: var(--mono);
+    color: var(--text2);
+    min-height: 200px;
+    word-wrap: break-word;
+}
+
+.ai-section-header {
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-top: 14px;
+    margin-bottom: 8px;
+}
+
+.typing-dot {
+    display: inline-block;
+    animation: typingPulse 1.2s ease infinite;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typingPulse {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+}

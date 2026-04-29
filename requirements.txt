@@ -1,6 +1,6 @@
 eel
-anthropic
-dotenv
-google-generativeai
-python-dotenv
+numpy
+scipy
+matplotlib
 requests
+python-dotenv

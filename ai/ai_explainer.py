@@ -13,58 +13,53 @@ def explain(user_code: str, measured_complexity: str, static_prediction: str):
 
     if measured_complexity != static_prediction:
         disagreement_note = (
-            f"Note: The static AST analysis predicted {static_prediction}, "
-            f"but the measured result is {measured_complexity}. "
-            f"Please explain why they differ — this is the most important part."
+            f"Static analysis predicted {static_prediction}, but measured result is {measured_complexity}. "
+            f"Explain why they differ."
         )
     else:
         disagreement_note = ""
 
-    prompt = f"""
-You are an algorithm complexity explainer. A student has written the following Python function:
+    prompt = f"""You are an algorithm analysis assistant. Given this Python function:
 
-```python
 {user_code}
+
 Static analysis predicted: {static_prediction}
 Measured complexity: {measured_complexity}
-
 {disagreement_note}
 
-In 3-5 sentences, explain:
+Write two clearly labeled sections:
 
-Which specific operations in this code drive the complexity.
-Why those operations cost what they do.
-One concrete suggestion to improve it, if possible.
+COMPLEXITY EXPLANATION
+In 3-5 sentences: which operations drive the complexity, why they cost what they do, and one concrete suggestion to improve it.
 
-Write in plain English.
-Avoid jargon.
-Do not repeat the code back.
+OPTIMIZATION
+If a better time complexity is possible: show the optimized code directly (no markdown, no code fences, just Python). If already optimal: write "This algorithm is already asymptotically optimal."
 """
-url = "https://openrouter.ai/api/v1/chat/completions"
+    url = "https://openrouter.ai/api/v1/chat/completions"
 
-headers = {
-    "Authorization": f"Bearer {api_key}",
-    "Content-Type": "application/json"
-}
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
 
-payload = {
-    "model": model_name,
-    "messages": [
-        {"role": "system", "content": "You are an expert algorithm complexity explainer."},
-        {"role": "user", "content": prompt}
-    ],
-    "temperature": 0.3,
-    "max_tokens": maximum_tokens
-}
+    payload = {
+        "model": model_name,
+        "messages": [
+            {"role": "system", "content": "You are an expert algorithm analysis assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.3,
+        "max_tokens": maximum_tokens
+    }
 
-try:
-    response = requests.post(url, headers=headers, json=payload)
-    result = response.json()
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+        result = response.json()
 
-    if "choices" in result:
-        return result["choices"][0]["message"]["content"]
+        if "choices" in result:
+            return result["choices"][0]["message"]["content"]
 
-    return f"Error from API: {result}"
+        return f"Error from API: {result}"
 
-except Exception as e:
-    return f"Error: Could not fetch explanation: {e}"
+    except Exception as e:
+        return f"Error: Could not fetch explanation: {e}"

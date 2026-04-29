@@ -58,6 +58,7 @@
                             <option value="custom">Type your own...</option>
                             <option value="array-index-access">Array Index Access</option>
                             <option value="linear-search">Linear Search</option>
+                            <option value="binary-search">Binary Search</option>
                             <option value="merge-sort">Merge Sort</option>
                             <option value="bubble-sort">Bubble Sort</option>
                             <option value="matrix-mult">Naive Matrix Multiplication</option>
@@ -94,22 +95,23 @@
             <!-- RIGHT: ANALYSIS -->
             <div class="pane right-pane">
                 <div class="tabs">
-                    <button class="tab active" data-tab="chart">Chart</button>
-                    <button class="tab" data-tab="ai">AI</button>
-                    <button class="tab" data-tab="optimizer">Optimizer</button>
+                    <button class="tab active" data-tab="analysis">Analysis</button>
+                    <button class="tab" data-tab="ai-agent">AI Agent</button>
                 </div>
                 <div class="tab-content">
-                    <div id="chart" class="tab-panel active">
-                        <div class="empty-state">
-                            <div class="empty-title">No data yet</div>
-                            <div class="empty-sub">Run an algorithm to see complexity chart</div>
+                    <div id="analysis" class="tab-panel active">
+                        <div id="analysis-content" style="padding: 20px; overflow-y: auto; height: 100%;">
+                            <div style="text-align: center; color: #7c7468; padding-top: 40px;">
+                                <div style="font-size: 14px;">Run an algorithm to see the analysis</div>
+                            </div>
                         </div>
                     </div>
-                    <div id="ai" class="tab-panel">
-                        <div id="ai-result" class="result-body">Waiting for analysis...</div>
-                    </div>
-                    <div id="optimizer" class="tab-panel">
-                        <div id="opt-result" class="result-body">Waiting for analysis...</div>
+                    <div id="ai-agent" class="tab-panel">
+                        <div id="ai-agent-content" style="padding: 20px; overflow-y: auto; height: 100%;">
+                            <div id="ai-agent-output" class="ai-agent-output">
+                                <span class="typing-dot">·</span><span class="typing-dot">·</span><span class="typing-dot">·</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -123,6 +125,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="eel.js"></script>
     <script src="main.js"></script>
 </body>
