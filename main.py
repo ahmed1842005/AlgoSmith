@@ -18,41 +18,46 @@ def run_algorithm(algorithm, code, input_data):
     if not code.strip():
         return {"error": "No code provided."}
 
-    # 1. Static analysis
+    
     try:
-        static_result = get_code_analysis(code)
+        static_result     = get_code_analysis(code)
         static_prediction = static_result.get("complexity", "Unknown")
     except Exception:
         static_prediction = "Unknown"
 
-    # 2. Execution + curve fitting
+    
+    sizes          = None
+    times_best_ms  = []
+    times_avg_ms   = []
+    times_worst_ms = []
+    confidence     = 0
+    ranking        = []
+
     fit_result = get_performance_report(code)
-    if "error" in fit_result:
-        return {"error": fit_result["error"]}
+    if "error" not in fit_result:
+        sizes          = fit_result["raw_data"]["sizes"]
+        times_best_ms  = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_best"]]
+        times_avg_ms   = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_avg"]]
+        times_worst_ms = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_worst"]]
+        confidence     = fit_result["confidence"]
+        ranking        = fit_result["ranking"]
 
-    measured_complexity = fit_result["detected"]
-    confidence          = fit_result["confidence"]
-    sizes               = fit_result["raw_data"]["sizes"]
-    times_best_ms       = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_best"]]
-    times_avg_ms        = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_avg"]]
-    times_worst_ms      = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_worst"]]
-
-    # 3. AI explanation (combined explanation + optimization)
+    # 3. AI explanation
     try:
-        explanation = explain(code, measured_complexity, static_prediction)
+        explanation = explain(code, static_prediction, static_prediction)
     except Exception as e:
         explanation = f"AI explanation unavailable: {e}"
 
     return {
-        "measured":     measured_complexity,
-        "static":       static_prediction,
-        "confidence":   confidence,
-        "explanation":  explanation,
-        "sizes":        sizes,
-        "times_best":   times_best_ms,
-        "times_avg":    times_avg_ms,
-        "times_worst":  times_worst_ms,
-        "ranking":      fit_result["ranking"],
+        "measured":    static_prediction,
+        "static":      static_prediction,
+        "confidence":  confidence,
+        "explanation": explanation,
+        "sizes":       sizes or [],
+        "times_best":  times_best_ms,
+        "times_avg":   times_avg_ms,
+        "times_worst": times_worst_ms,
+        "ranking":     ranking,
     }
 
 
@@ -68,7 +73,7 @@ def get_optimization(code):
 
 def main():
     eel.init("web")
-    eel.start("index.html", size=(1400, 850), port=8000)
+    eel.start("index.html", size=(1400, 850), port=8000, mode='edge')
 
 
 if __name__ == "__main__":

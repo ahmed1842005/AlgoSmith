@@ -15,17 +15,18 @@ def linear_search(arr, target=None):
     return -1
 
 
-def binary_search(arr, target=None):
-    """O(log n) — requires sorted input"""
-    if target is None:
-        target = len(arr) // 2
-    left, right = 0, len(arr) - 1
-    while left <= right:
-        mid = (left + right) // 2
-        if arr[mid] == target:
+def binary_search_recursive(arr, low, high, x):
+
+    if high >= low:
+
+        mid = low + (high - low) // 2
+        if arr[mid] == x:
             return mid
-        elif arr[mid] < target:
-            left = mid + 1
+        elif arr[mid] > x:
+            return binary_search_recursive(arr, low, mid - 1, x)
+
         else:
-            right = mid - 1
-    return -1
+            return binary_search_recursive(arr, mid + 1, high, x)
+    else:
+        return -1
+
