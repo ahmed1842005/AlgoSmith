@@ -53,7 +53,7 @@ If a better time complexity is possible: show the optimized code directly (no ma
     }
 
     try:
-        response = requests.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload, timeout=8)
         result = response.json()
 
         if "choices" in result:
