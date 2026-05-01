@@ -34,9 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const algorithmTemplates = {
     custom: "",
     "array-index-access":
-      'def get_element(arr, index):\n    """Access element at given index"""\n    return arr[index]\n',
+      'def get_element(arr, index=0):\n    """Access element at given index"""\n    return arr[index]\n',
     "linear-search":
-      'def linear_search(arr, target):\n    """Linear search for target"""\n    for i, val in enumerate(arr):\n        if val == target:\n            return i\n    return -1\n',
+      'def linear_search(arr, target=None):\n    """Linear search for target"""\n    for i, val in enumerate(arr):\n        if val == target:\n            return i\n    return -1\n',
     "binary-search":
       "def binary_search(arr, target=None, left=0, right=None):\n    if target is None:\n        target = len(arr) // 2\n    if right is None:\n        right = len(arr) - 1\n    if left > right:\n        return -1\n    mid = (left + right) // 2\n    if arr[mid] == target:\n        return mid\n    elif arr[mid] < target:\n        return binary_search(arr, target, mid + 1, right)\n    else:\n        return binary_search(arr, target, left, mid - 1)\n",
     "merge-sort":
@@ -310,13 +310,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         renderExplainerOutput(explainerText);
 
-        if (optimizerText) {
-          renderOptimizerOutput(optimizerText);
-        } else {
-          renderOptimizerOutput(
-            "Run the algorithm first to generate optimization suggestions.",
-          );
-        }
       }
     } catch (error) {
       const content = document.getElementById("analysis-content");

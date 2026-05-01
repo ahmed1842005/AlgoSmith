@@ -3,16 +3,15 @@ import os
 import eel
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(BASE, 'engin'))
+sys.path.insert(0, os.path.join(BASE, 'engine'))
 sys.path.insert(0, os.path.join(BASE, 'ai'))
-sys.path.insert(0, os.path.join(BASE, 'algorithms'))
 
-from bridge_fit import get_performance_report
-from bridge_static import get_code_analysis
-from ai_explainer import explain 
-from optimizer import optimize
-from bug_detector import detect_bugs
-from chat import chat
+from engine.bridge_fit import get_performance_report
+from engine.bridge_static import get_code_analysis
+from ai.ai_explainer import explain 
+from ai.optimizer import optimize
+from ai.bug_detector import detect_bugs
+from ai.chat import chat
 
 @eel.expose
 def run_algorithm(algorithm, code, input_data):
