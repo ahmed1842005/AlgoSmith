@@ -84,9 +84,7 @@ def get_performance_report(code_string):
             sizes = [5, 7, 10, 12, 15, 18, 20]
 
         measured_sizes = []
-        times_best = []
-        times_avg = []
-        times_worst = []
+        times = []
 
         benchmark_start = time.perf_counter()
 
@@ -96,37 +94,28 @@ def get_performance_report(code_string):
 
             measured_sizes.append(n)
 
-            # Best case
-            result_best = [None]
-            args_best = _generate_input(func, n, 'best')
-            thread = threading.Thread(target=_run_with_timeout, args=(func, args_best, result_best, 0))
-            thread.daemon = True
-            thread.start()
-            thread.join(timeout=TIMEOUT_SECONDS)
-            times_best.append(result_best[0] if result_best[0] is not None else 0.0)
+            # Run 3 times for smaller sizes (better accuracy), 1 time for larger sizes (speed)
+            run_count = 3 if n < 200 else 1
+            run_times = []
+            
+            for _ in range(run_count):
+                result = [None]
+                args = _generate_input(func, n, 'avg')
+                thread = threading.Thread(target=_run_with_timeout, args=(func, args, result, 0))
+                thread.daemon = True
+                thread.start()
+                thread.join(timeout=TIMEOUT_SECONDS)
+                run_time = result[0] if result[0] is not None else 0.0
+                run_times.append(run_time)
+            
+            # Take minimum time across runs
+            min_time = min(run_times) if run_times else 0.0
+            times.append(min_time)
 
-            # Average case
-            result_avg = [None]
-            args_avg = _generate_input(func, n, 'avg')
-            thread = threading.Thread(target=_run_with_timeout, args=(func, args_avg, result_avg, 0))
-            thread.daemon = True
-            thread.start()
-            thread.join(timeout=TIMEOUT_SECONDS)
-            times_avg.append(result_avg[0] if result_avg[0] is not None else 0.0)
-
-            # Worst case
-            result_worst = [None]
-            args_worst = _generate_input(func, n, 'worst')
-            thread = threading.Thread(target=_run_with_timeout, args=(func, args_worst, result_worst, 0))
-            thread.daemon = True
-            thread.start()
-            thread.join(timeout=TIMEOUT_SECONDS)
-            times_worst.append(result_worst[0] if result_worst[0] is not None else 0.0)
-
-        if all(t == 0.0 for t in times_avg):
+        if all(t == 0.0 for t in times):
             return {"error": "All runs timed out or returned zero. Try a slower algorithm or check your code."}
 
-        analysis_results = analyzer.fit_and_analyze(measured_sizes, times_avg)
+        analysis_results = analyzer.fit_and_analyze(measured_sizes, times)
 
         return {
             "detected": analysis_results[0]["label"],
@@ -134,9 +123,7 @@ def get_performance_report(code_string):
             "ranking": analysis_results,
             "raw_data": {
                 "sizes": measured_sizes,
-                "times_best": times_best,
-                "times_avg": times_avg,
-                "times_worst": times_worst
+                "times": times
             }
         }
 

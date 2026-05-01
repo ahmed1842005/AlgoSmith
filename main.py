@@ -28,20 +28,16 @@ def run_algorithm(algorithm, code, input_data):
 
     
     sizes          = None
-    times_best_ms  = []
-    times_avg_ms   = []
-    times_worst_ms = []
+    times_ms       = []
     confidence     = 0
     ranking        = []
 
     fit_result = get_performance_report(code)
     if "error" not in fit_result:
-        sizes          = fit_result["raw_data"]["sizes"]
-        times_best_ms  = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_best"]]
-        times_avg_ms   = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_avg"]]
-        times_worst_ms = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_worst"]]
-        confidence     = fit_result["confidence"]
-        ranking        = fit_result["ranking"]
+        sizes      = fit_result["raw_data"]["sizes"]
+        times_ms   = [round(t * 1000, 4) for t in fit_result["raw_data"]["times"]]
+        confidence = fit_result["confidence"]
+        ranking    = fit_result["ranking"]
 
     # 3. AI explanation
     try:
@@ -55,9 +51,7 @@ def run_algorithm(algorithm, code, input_data):
         "confidence":  confidence,
         "explanation": explanation,
         "sizes":       sizes or [],
-        "times_best":  times_best_ms,
-        "times_avg":   times_avg_ms,
-        "times_worst": times_worst_ms,
+        "times":       times_ms,
         "ranking":     ranking,
     }
 
@@ -88,7 +82,7 @@ def chat_with_ai(message):
 
 def main():
     eel.init("web")
-    eel.start("index.html", size=(1400, 850), port=8000, mode='edge')
+    eel.start("index.html", size=(1400, 850), port=8000)
 
 
 if __name__ == "__main__":

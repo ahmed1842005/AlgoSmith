@@ -152,40 +152,17 @@ document.addEventListener("DOMContentLoaded", () => {
             <canvas id="complexity-chart" style="max-height: 300px;"></canvas>
         `;
 
-    // Section 4: Case Summary
-    const section4 = document.createElement("div");
-    section4.className = "analysis-section";
-    section4.innerHTML = `
-            <div class="case-summary">
-                <div class="case-card">
-                    <div class="case-card-label">BEST</div>
-                    <div class="case-card-value">${result.measured}</div>
-                </div>
-                <div class="case-card">
-                    <div class="case-card-label">AVG</div>
-                    <div class="case-card-value">${result.measured}</div>
-                </div>
-                <div class="case-card">
-                    <div class="case-card-label">WORST</div>
-                    <div class="case-card-value">${result.measured}</div>
-                </div>
-            </div>
-        `;
-
     content.innerHTML = "";
     content.appendChild(section1);
     content.appendChild(section2);
     content.appendChild(section3);
-    content.appendChild(section4);
 
     // Render the chart
     setTimeout(
       () =>
         renderChart(
           result.sizes,
-          result.times_best,
-          result.times_avg,
-          result.times_worst,
+          result.times,
           result.measured,
           result.ranking,
         ),
@@ -225,8 +202,8 @@ document.addEventListener("DOMContentLoaded", () => {
     output.innerHTML = `<div class="card-title">Bug Detector</div><div class="card-body">${issues}</div>`;
   }
 
-  // Render three-line chart for best/avg/worst
-  function renderChart(sizes, timesBest, timesAvg, timesWorst, label, ranking) {
+  // Render single-line chart
+  function renderChart(sizes, times, label, ranking) {
     const canvas = document.getElementById("complexity-chart");
     if (!canvas) return;
     if (chartInstance) {
@@ -239,32 +216,12 @@ document.addEventListener("DOMContentLoaded", () => {
       data: {
         datasets: [
           {
-            label: "Best Case (ms)",
-            data: sizes.map((n, i) => ({ x: n, y: timesBest[i] })),
-            borderColor: "#22c55e",
+            label: "Runtime (ms)",
+            data: sizes.map((n, i) => ({ x: n, y: times[i] })),
+            borderColor: "#8b5cf6",
             backgroundColor: "transparent",
             pointRadius: 4,
-            pointBackgroundColor: "#22c55e",
-            tension: 0.35,
-            fill: false,
-          },
-          {
-            label: "Average Case (ms)",
-            data: sizes.map((n, i) => ({ x: n, y: timesAvg[i] })),
-            borderColor: "#f4b841",
-            backgroundColor: "transparent",
-            pointRadius: 4,
-            pointBackgroundColor: "#f4b841",
-            tension: 0.35,
-            fill: false,
-          },
-          {
-            label: "Worst Case (ms)",
-            data: sizes.map((n, i) => ({ x: n, y: timesWorst[i] })),
-            borderColor: "#ef4444",
-            backgroundColor: "transparent",
-            pointRadius: 4,
-            pointBackgroundColor: "#ef4444",
+            pointBackgroundColor: "#8b5cf6",
             tension: 0.35,
             fill: false,
           },

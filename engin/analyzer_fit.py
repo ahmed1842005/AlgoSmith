@@ -25,7 +25,7 @@ MODELS = {
 
 class PerformanceAnalyzer:
     def __init__(self):
-        self.sizes = [50, 100, 200, 400, 700, 1000]
+        self.sizes = [1, 100, 200, 400, 700, 1000]
 
     # ------------------------------------------------------------------
     def fit_and_analyze(self, input_sizes, times):
