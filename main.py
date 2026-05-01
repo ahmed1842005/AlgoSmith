@@ -3,16 +3,15 @@ import os
 import eel
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(BASE, 'engin'))
+sys.path.insert(0, os.path.join(BASE, 'engine'))
 sys.path.insert(0, os.path.join(BASE, 'ai'))
-sys.path.insert(0, os.path.join(BASE, 'algorithms'))
 
-from bridge_fit import get_performance_report
-from bridge_static import get_code_analysis
-from ai_explainer import explain 
-from optimizer import optimize
-from bug_detector import detect_bugs
-from chat import chat
+from engine.bridge_fit import get_performance_report
+from engine.bridge_static import get_code_analysis
+from ai.ai_explainer import explain 
+from ai.optimizer import optimize
+from ai.bug_detector import detect_bugs
+from ai.chat import chat
 
 @eel.expose
 def run_algorithm(algorithm, code, input_data):
@@ -28,20 +27,16 @@ def run_algorithm(algorithm, code, input_data):
 
     
     sizes          = None
-    times_best_ms  = []
-    times_avg_ms   = []
-    times_worst_ms = []
+    times_ms       = []
     confidence     = 0
     ranking        = []
 
     fit_result = get_performance_report(code)
     if "error" not in fit_result:
-        sizes          = fit_result["raw_data"]["sizes"]
-        times_best_ms  = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_best"]]
-        times_avg_ms   = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_avg"]]
-        times_worst_ms = [round(t * 1000, 4) for t in fit_result["raw_data"]["times_worst"]]
-        confidence     = fit_result["confidence"]
-        ranking        = fit_result["ranking"]
+        sizes      = fit_result["raw_data"]["sizes"]
+        times_ms   = [round(t * 1000, 4) for t in fit_result["raw_data"]["times"]]
+        confidence = fit_result["confidence"]
+        ranking    = fit_result["ranking"]
 
     # 3. AI explanation
     try:
@@ -55,9 +50,7 @@ def run_algorithm(algorithm, code, input_data):
         "confidence":  confidence,
         "explanation": explanation,
         "sizes":       sizes or [],
-        "times_best":  times_best_ms,
-        "times_avg":   times_avg_ms,
-        "times_worst": times_worst_ms,
+        "times":       times_ms,
         "ranking":     ranking,
     }
 
@@ -88,7 +81,7 @@ def chat_with_ai(message):
 
 def main():
     eel.init("web")
-    eel.start("index.html", size=(1400, 850), port=8000, mode='edge')
+    eel.start("index.html", size=(1400, 850), port=8000)
 
 
 if __name__ == "__main__":

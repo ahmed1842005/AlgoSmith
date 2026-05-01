@@ -34,9 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const algorithmTemplates = {
     custom: "",
     "array-index-access":
-      'def get_element(arr, index):\n    """Access element at given index"""\n    return arr[index]\n',
+      'def get_element(arr, index=0):\n    """Access element at given index"""\n    return arr[index]\n',
     "linear-search":
-      'def linear_search(arr, target):\n    """Linear search for target"""\n    for i, val in enumerate(arr):\n        if val == target:\n            return i\n    return -1\n',
+      'def linear_search(arr, target=None):\n    """Linear search for target"""\n    for i, val in enumerate(arr):\n        if val == target:\n            return i\n    return -1\n',
     "binary-search":
       "def binary_search(arr, target=None, left=0, right=None):\n    if target is None:\n        target = len(arr) // 2\n    if right is None:\n        right = len(arr) - 1\n    if left > right:\n        return -1\n    mid = (left + right) // 2\n    if arr[mid] == target:\n        return mid\n    elif arr[mid] < target:\n        return binary_search(arr, target, mid + 1, right)\n    else:\n        return binary_search(arr, target, left, mid - 1)\n",
     "merge-sort":
@@ -152,40 +152,17 @@ document.addEventListener("DOMContentLoaded", () => {
             <canvas id="complexity-chart" style="max-height: 300px;"></canvas>
         `;
 
-    // Section 4: Case Summary
-    const section4 = document.createElement("div");
-    section4.className = "analysis-section";
-    section4.innerHTML = `
-            <div class="case-summary">
-                <div class="case-card">
-                    <div class="case-card-label">BEST</div>
-                    <div class="case-card-value">${result.measured}</div>
-                </div>
-                <div class="case-card">
-                    <div class="case-card-label">AVG</div>
-                    <div class="case-card-value">${result.measured}</div>
-                </div>
-                <div class="case-card">
-                    <div class="case-card-label">WORST</div>
-                    <div class="case-card-value">${result.measured}</div>
-                </div>
-            </div>
-        `;
-
     content.innerHTML = "";
     content.appendChild(section1);
     content.appendChild(section2);
     content.appendChild(section3);
-    content.appendChild(section4);
 
     // Render the chart
     setTimeout(
       () =>
         renderChart(
           result.sizes,
-          result.times_best,
-          result.times_avg,
-          result.times_worst,
+          result.times,
           result.measured,
           result.ranking,
         ),
@@ -225,8 +202,8 @@ document.addEventListener("DOMContentLoaded", () => {
     output.innerHTML = `<div class="card-title">Bug Detector</div><div class="card-body">${issues}</div>`;
   }
 
-  // Render three-line chart for best/avg/worst
-  function renderChart(sizes, timesBest, timesAvg, timesWorst, label, ranking) {
+  // Render single-line chart
+  function renderChart(sizes, times, label, ranking) {
     const canvas = document.getElementById("complexity-chart");
     if (!canvas) return;
     if (chartInstance) {
@@ -239,32 +216,12 @@ document.addEventListener("DOMContentLoaded", () => {
       data: {
         datasets: [
           {
-            label: "Best Case (ms)",
-            data: sizes.map((n, i) => ({ x: n, y: timesBest[i] })),
-            borderColor: "#22c55e",
+            label: "Runtime (ms)",
+            data: sizes.map((n, i) => ({ x: n, y: times[i] })),
+            borderColor: "#8b5cf6",
             backgroundColor: "transparent",
             pointRadius: 4,
-            pointBackgroundColor: "#22c55e",
-            tension: 0.35,
-            fill: false,
-          },
-          {
-            label: "Average Case (ms)",
-            data: sizes.map((n, i) => ({ x: n, y: timesAvg[i] })),
-            borderColor: "#f4b841",
-            backgroundColor: "transparent",
-            pointRadius: 4,
-            pointBackgroundColor: "#f4b841",
-            tension: 0.35,
-            fill: false,
-          },
-          {
-            label: "Worst Case (ms)",
-            data: sizes.map((n, i) => ({ x: n, y: timesWorst[i] })),
-            borderColor: "#ef4444",
-            backgroundColor: "transparent",
-            pointRadius: 4,
-            pointBackgroundColor: "#ef4444",
+            pointBackgroundColor: "#8b5cf6",
             tension: 0.35,
             fill: false,
           },
@@ -353,13 +310,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         renderExplainerOutput(explainerText);
 
-        if (optimizerText) {
-          renderOptimizerOutput(optimizerText);
-        } else {
-          renderOptimizerOutput(
-            "Run the algorithm first to generate optimization suggestions.",
-          );
-        }
       }
     } catch (error) {
       const content = document.getElementById("analysis-content");

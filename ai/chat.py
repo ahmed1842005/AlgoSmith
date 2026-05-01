@@ -41,6 +41,9 @@ Ensure the output is clean and visually readable. Avoid excessive or unnecessary
 If symbols negatively affect readability, simplify or remove them and replace them with clean, standard formatting.
 
 Use:
+- DO NOT USE .md or other markup syntax used in s in the output like '****' for BOLD jest simple plain text.
+- Use plain text with clear structure.
+- Use standard indentation and spacing for code blocks.
 - Clear headings
 - Proper spacing
 - Simple separators (avoid overusing symbols)
