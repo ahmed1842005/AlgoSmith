@@ -2,11 +2,11 @@ import os
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
-
+load_dotenv() 
+      
 SYSTEM_PROMPT = """You are an expert Algorithm Optimization Assistant inside the AlgoSmith application.
 Your job is to analyze the user's Python function and determine whether it can be optimized for better time complexity.
-You must follow these rules strictly:
+You must follow these rules strictly: 
 
 1. Carefully analyze the current algorithm and identify its true time complexity.
 2. Determine whether a better asymptotic complexity is realistically possible.

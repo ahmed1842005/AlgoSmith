@@ -1,5 +1,5 @@
 import sys
-import os
+import os                       
 import eel
 
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -9,9 +9,10 @@ sys.path.insert(0, os.path.join(BASE, 'algorithms'))
 
 from bridge_fit import get_performance_report
 from bridge_static import get_code_analysis
-from ai_explainer import explain
+from ai_explainer import explain 
 from optimizer import optimize
-
+from bug_detector import detect_bugs
+from chat import chat
 
 @eel.expose
 def run_algorithm(algorithm, code, input_data):
@@ -60,15 +61,29 @@ def run_algorithm(algorithm, code, input_data):
         "ranking":     ranking,
     }
 
+@eel.expose
+def scan_bugs(code):
+    if not code.strip():
+        return {"ok": False, "message": "No code provided.", "issues": []}
+    return detect_bugs(code)
 
 @eel.expose
 def get_optimization(code):
     if not code.strip():
         return "No code provided."
+    bug_report = detect_bugs(code)
+    if not bug_report.get("ok", False):
+        return "I can't optimize the code because it has bugs. Please fix the reported issues first."
+    
     try:
         return optimize(code)
     except Exception as e:
         return f"Optimizer error: {e}"
+
+
+@eel.expose
+def chat_with_ai(message):
+    return chat(message)
 
 
 def main():

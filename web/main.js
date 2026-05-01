@@ -1,96 +1,117 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const splash = document.getElementById('splash');
-    const app = document.getElementById('app');
-    const algorithmSelect = document.getElementById('algorithm');
-    const codeEditor = document.getElementById('code');
-    const inputData = document.getElementById('input-data');
-    const inputGroup = document.querySelector('.input-field');
-    const autoBtn = document.getElementById('auto-btn');
-    const manualBtn = document.getElementById('manual-btn');
-    const runBtn = document.getElementById('run-btn');
-    const tabs = document.querySelectorAll('.tab');
-    const tabPanels = document.querySelectorAll('.tab-panel');
-    const aiResult = document.getElementById('ai-result');
-    const statusText = document.getElementById('status-text');
-    const complexityBadge = document.getElementById('complexity-badge');
-    const resizer = document.getElementById('resizer');
-    const leftPane = document.querySelector('.left-pane');
-    const rightPane = document.querySelector('.right-pane');
+document.addEventListener("DOMContentLoaded", () => {
+  const splash = document.getElementById("splash");
+  const app = document.getElementById("app");
+  const algorithmSelect = document.getElementById("algorithm");
+  const codeEditor = document.getElementById("code");
+  const inputData = document.getElementById("input-data");
+  const inputGroup = document.querySelector(".input-field");
+  const autoBtn = document.getElementById("auto-btn");
+  const manualBtn = document.getElementById("manual-btn");
+  const runBtn = document.getElementById("run-btn");
+  const tabs = document.querySelectorAll(".tab");
+  const tabPanels = document.querySelectorAll(".tab-panel");
+  const statusText = document.getElementById("status-text");
+  const complexityBadge = document.getElementById("complexity-badge");
+  const resizer = document.getElementById("resizer");
+  const leftPane = document.querySelector(".left-pane");
+  const rightPane = document.querySelector(".right-pane");
 
-    let isManualMode = false;
-    let codemirrorEditor = null;
-    let chartInstance = null;
+  let isManualMode = false;
+  let codemirrorEditor = null;
+  let chartInstance = null;
 
-    // CodeMirror
-    codemirrorEditor = CodeMirror.fromTextArea(document.getElementById('code'), {
-        mode: 'python',
-        theme: 'dracula',
-        lineNumbers: true,
-        indentUnit: 4,
-        lineWrapping: true
-    });
-    codemirrorEditor.setSize('100%', '100%');
+  // CodeMirror
+  codemirrorEditor = CodeMirror.fromTextArea(document.getElementById("code"), {
+    mode: "python",
+    theme: "dracula",
+    lineNumbers: true,
+    indentUnit: 4,
+    lineWrapping: true,
+  });
+  codemirrorEditor.setSize("100%", "100%");
 
-    // Algorithm templates
-    const algorithmTemplates = {
-        'custom': '',
-        'array-index-access': 'def get_element(arr, index):\n    """Access element at given index"""\n    return arr[index]\n',
-        'linear-search': 'def linear_search(arr, target):\n    """Linear search for target"""\n    for i, val in enumerate(arr):\n        if val == target:\n            return i\n    return -1\n',
-        'binary-search': 'def binary_search(arr, target=None, left=0, right=None):\n    if target is None:\n        target = len(arr) // 2\n    if right is None:\n        right = len(arr) - 1\n    if left > right:\n        return -1\n    mid = (left + right) // 2\n    if arr[mid] == target:\n        return mid\n    elif arr[mid] < target:\n        return binary_search(arr, target, mid + 1, right)\n    else:\n        return binary_search(arr, target, left, mid - 1)\n',
-        'merge-sort': 'def merge_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])\n    right = merge_sort(arr[mid:])\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] < right[j]:\n            result.append(left[i]); i += 1\n        else:\n            result.append(right[j]); j += 1\n    return result + left[i:] + right[j:]\n',
-        'bubble-sort': 'def bubble_sort(arr):\n    """Bubble sort algorithm"""\n    n = len(arr)\n    for i in range(n):\n        for j in range(n - i - 1):\n            if arr[j] > arr[j + 1]:\n                arr[j], arr[j + 1] = arr[j + 1], arr[j]\n    return arr\n',
-        'matrix-mult': 'def matrix_mult(A, B):\n    """Naive matrix multiplication"""\n    rows_A = len(A)\n    cols_A = len(A[0])\n    cols_B = len(B[0])\n    result = [[0] * cols_B for _ in range(rows_A)]\n    for i in range(rows_A):\n        for j in range(cols_B):\n            for k in range(cols_A):\n                result[i][j] += A[i][k] * B[k][j]\n    return result\n',
-        'fibonacci': 'def fibonacci(n):\n    """Recursive Fibonacci"""\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n'
-    };
+  // Algorithm templates
+  const algorithmTemplates = {
+    custom: "",
+    "array-index-access":
+      'def get_element(arr, index):\n    """Access element at given index"""\n    return arr[index]\n',
+    "linear-search":
+      'def linear_search(arr, target):\n    """Linear search for target"""\n    for i, val in enumerate(arr):\n        if val == target:\n            return i\n    return -1\n',
+    "binary-search":
+      "def binary_search(arr, target=None, left=0, right=None):\n    if target is None:\n        target = len(arr) // 2\n    if right is None:\n        right = len(arr) - 1\n    if left > right:\n        return -1\n    mid = (left + right) // 2\n    if arr[mid] == target:\n        return mid\n    elif arr[mid] < target:\n        return binary_search(arr, target, mid + 1, right)\n    else:\n        return binary_search(arr, target, left, mid - 1)\n",
+    "merge-sort":
+      "def merge_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])\n    right = merge_sort(arr[mid:])\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] < right[j]:\n            result.append(left[i]); i += 1\n        else:\n            result.append(right[j]); j += 1\n    return result + left[i:] + right[j:]\n",
+    "bubble-sort":
+      'def bubble_sort(arr):\n    """Bubble sort algorithm"""\n    n = len(arr)\n    for i in range(n):\n        for j in range(n - i - 1):\n            if arr[j] > arr[j + 1]:\n                arr[j], arr[j + 1] = arr[j + 1], arr[j]\n    return arr\n',
+    "matrix-mult":
+      'def matrix_mult(A, B):\n    """Naive matrix multiplication"""\n    rows_A = len(A)\n    cols_A = len(A[0])\n    cols_B = len(B[0])\n    result = [[0] * cols_B for _ in range(rows_A)]\n    for i in range(rows_A):\n        for j in range(cols_B):\n            for k in range(cols_A):\n                result[i][j] += A[i][k] * B[k][j]\n    return result\n',
+    fibonacci:
+      'def fibonacci(n):\n    """Recursive Fibonacci"""\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n',
+  };
 
-    // Load initial - custom (empty)
-    codemirrorEditor.setValue('');
+  // Load initial - custom (empty)
+  codemirrorEditor.setValue("");
 
-    // Algorithm change
-    algorithmSelect.addEventListener('change', () => {
-        const alg = algorithmSelect.value;
-        if (algorithmTemplates[alg]) {
-            codemirrorEditor.setValue(algorithmTemplates[alg]);
-        }
-    });
+  // Algorithm change
+  algorithmSelect.addEventListener("change", () => {
+    const alg = algorithmSelect.value;
+    if (algorithmTemplates[alg]) {
+      codemirrorEditor.setValue(algorithmTemplates[alg]);
+    }
+  });
 
-    // Mode toggle
-    autoBtn.addEventListener('click', () => {
-        isManualMode = false;
-        autoBtn.classList.add('active');
-        manualBtn.classList.remove('active');
-        inputGroup.classList.add('hidden');
-    });
+  // Mode toggle
+  autoBtn.addEventListener("click", () => {
+    isManualMode = false;
+    autoBtn.classList.add("active");
+    manualBtn.classList.remove("active");
+    inputGroup.classList.add("hidden");
+  });
 
-    manualBtn.addEventListener('click', () => {
-        isManualMode = true;
-        manualBtn.classList.add('active');
-        autoBtn.classList.remove('active');
-        inputGroup.classList.remove('hidden');
-    });
+  manualBtn.addEventListener("click", () => {
+    isManualMode = true;
+    manualBtn.classList.add("active");
+    autoBtn.classList.remove("active");
+    inputGroup.classList.remove("hidden");
+  });
 
-    // Complexity description labels
-    const complexityDescriptions = {
-        'O(1)': 'Constant — result found without iterating',
-        'O(log n)': 'Logarithmic — input halved each step',
-        'O(n)': 'Linear — single pass through input',
-        'O(n log n)': 'Linearithmic — divide and conquer',
-        'O(n²)': 'Quadratic — nested loop pattern detected',
-        'O(n³)': 'Cubic — triple nested loop detected',
-        'O(2ⁿ)': 'Exponential — recursive branching without memoization'
-    };
+  // Complexity description labels
+  const complexityDescriptions = {
+    "O(1)": "Constant — result found without iterating",
+    "O(log n)": "Logarithmic — input halved each step",
+    "O(n)": "Linear — single pass through input",
+    "O(n log n)": "Linearithmic — divide and conquer",
+    "O(n²)": "Quadratic — nested loop pattern detected",
+    "O(n³)": "Cubic — triple nested loop detected",
+    "O(2ⁿ)": "Exponential — recursive branching without memoization",
+  };
 
-    // Render analysis tab with full details
-    function renderAnalysis(result) {
-        const content = document.getElementById('analysis-content');
-        
-        // Section 1: Detected Complexity
-        const section1 = document.createElement('div');
-        section1.className = 'analysis-section';
-        section1.innerHTML = `
+  // ── Split AI explanation into Explainer + Optimizer sections ──
+  function splitExplanation(fullText) {
+    const optimizationMarker = /OPTIMIZATION\s*/i;
+    const parts = fullText.split(optimizationMarker);
+
+    // Remove the "COMPLEXITY EXPLANATION" header from the first part if present
+    const explainerText = parts[0]
+      .replace(/COMPLEXITY EXPLANATION\s*/i, "")
+      .trim();
+
+    const optimizerText = parts.length > 1 ? parts[1].trim() : null;
+
+    return { explainerText, optimizerText };
+  }
+
+  // Render analysis tab with full details
+  function renderAnalysis(result) {
+    const content = document.getElementById("analysis-content");
+
+    // Section 1: Detected Complexity
+    const section1 = document.createElement("div");
+    section1.className = "analysis-section";
+    section1.innerHTML = `
             <div class="section-label-sm">Detected Complexity</div>
             <div class="complexity-hero">${result.measured}</div>
-            <div class="complexity-subtitle">${complexityDescriptions[result.measured] || 'Unknown complexity class'}</div>
+            <div class="complexity-subtitle">${complexityDescriptions[result.measured] || "Unknown complexity class"}</div>
             <div class="confidence-bar-wrap">
                 <span>Confidence</span>
                 <div class="confidence-bar-track">
@@ -99,18 +120,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>${result.confidence}%</span>
             </div>
         `;
-        
-        // Section 2: Candidate Classes
-        const section2 = document.createElement('div');
-        section2.className = 'analysis-section';
-        let candidatesHtml = '<div class="section-label-sm">Candidate Classes</div>';
-        const topCandidates = result.ranking.slice(0, 5);
-        const maxConfidence = Math.max(...topCandidates.map(c => c.confidence));
-        topCandidates.forEach((candidate, idx) => {
-            const isWinner = idx === 0;
-            const fillClass = isWinner ? 'winner' : 'other';
-            const percent = candidate.confidence;
-            candidatesHtml += `
+
+    // Section 2: Candidate Classes
+    const section2 = document.createElement("div");
+    section2.className = "analysis-section";
+    let candidatesHtml =
+      '<div class="section-label-sm">Candidate Classes</div>';
+    const topCandidates = result.ranking.slice(0, 5);
+    const maxConfidence = Math.max(...topCandidates.map((c) => c.confidence));
+    topCandidates.forEach((candidate, idx) => {
+      const isWinner = idx === 0;
+      const fillClass = isWinner ? "winner" : "other";
+      const percent = candidate.confidence;
+      candidatesHtml += `
                 <div class="candidate-row">
                     <div class="candidate-label">${candidate.label}</div>
                     <div class="candidate-track">
@@ -119,21 +141,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="candidate-pct">${percent}%</div>
                 </div>
             `;
-        });
-        section2.innerHTML = candidatesHtml;
-        
-        // Section 3: Runtime Chart
-        const section3 = document.createElement('div');
-        section3.className = 'analysis-section';
-        section3.innerHTML = `
+    });
+    section2.innerHTML = candidatesHtml;
+
+    // Section 3: Runtime Chart
+    const section3 = document.createElement("div");
+    section3.className = "analysis-section";
+    section3.innerHTML = `
             <div class="section-label-sm">Runtime Across Input Sizes</div>
             <canvas id="complexity-chart" style="max-height: 300px;"></canvas>
         `;
-        
-        // Section 4: Case Summary
-        const section4 = document.createElement('div');
-        section4.className = 'analysis-section';
-        section4.innerHTML = `
+
+    // Section 4: Case Summary
+    const section4 = document.createElement("div");
+    section4.className = "analysis-section";
+    section4.innerHTML = `
             <div class="case-summary">
                 <div class="case-card">
                     <div class="case-card-label">BEST</div>
@@ -149,201 +171,371 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
-        
-        content.innerHTML = '';
-        content.appendChild(section1);
-        content.appendChild(section2);
-        content.appendChild(section3);
-        content.appendChild(section4);
-        
-        // Render the chart
-        setTimeout(() => renderChart(result.sizes, result.times_best, result.times_avg, result.times_worst, result.measured, result.ranking), 0);
+
+    content.innerHTML = "";
+    content.appendChild(section1);
+    content.appendChild(section2);
+    content.appendChild(section3);
+    content.appendChild(section4);
+
+    // Render the chart
+    setTimeout(
+      () =>
+        renderChart(
+          result.sizes,
+          result.times_best,
+          result.times_avg,
+          result.times_worst,
+          result.measured,
+          result.ranking,
+        ),
+      0,
+    );
+  }
+
+  function renderExplainerOutput(message) {
+    const output = document.getElementById("explainer-output");
+    output.innerHTML = `<div class="card-title">Complexity Explanation</div><div class="card-body">${message.replace(/\n/g, "<br>")}</div>`;
+  }
+
+  function renderOptimizerOutput(message) {
+    const output = document.getElementById("optimizer-output");
+    output.innerHTML = `<div class="card-title">Optimizer</div><div class="card-body">${message.replace(/\n/g, "<br>")}</div>`;
+  }
+
+  function renderBugReport(report) {
+    const output = document.getElementById("bug-detector-output");
+    if (report.ok) {
+      output.innerHTML = `<div class="card-title">Bug Detector</div><div class="card-body success">${report.message}</div>`;
+      return;
     }
 
-    // Render AI Agent tab
-    function renderAIAgent(explanation) {
-        const output = document.getElementById('ai-agent-output');
-        output.textContent = explanation;
+    const issues = report.issues
+      .map(
+        (issue) => `
+            <div class="bug-item">
+                <div><strong>${issue.type}</strong> — line ${issue.line}, col ${issue.column}</div>
+                <div class="muted">${issue.message}</div>
+                <div class="fix">Fix: ${issue.fix}</div>
+            </div>
+        `,
+      )
+      .join("");
+
+    output.innerHTML = `<div class="card-title">Bug Detector</div><div class="card-body">${issues}</div>`;
+  }
+
+  // Render three-line chart for best/avg/worst
+  function renderChart(sizes, timesBest, timesAvg, timesWorst, label, ranking) {
+    const canvas = document.getElementById("complexity-chart");
+    if (!canvas) return;
+    if (chartInstance) {
+      chartInstance.destroy();
+      chartInstance = null;
     }
 
-    // Render three-line chart for best/avg/worst
-    function renderChart(sizes, timesBest, timesAvg, timesWorst, label, ranking) {
-        const canvas = document.getElementById('complexity-chart');
-        if (!canvas) return;
-        if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-
-        chartInstance = new Chart(canvas, {
-            type: 'line',
-            data: {
-                datasets: [
-                    {
-                        label: 'Best Case (ms)',
-                        data: sizes.map((n, i) => ({ x: n, y: timesBest[i] })),
-                        borderColor: '#22c55e',
-                        backgroundColor: 'transparent',
-                        pointRadius: 4,
-                        pointBackgroundColor: '#22c55e',
-                        tension: 0.35,
-                        fill: false,
-                    },
-                    {
-                        label: 'Average Case (ms)',
-                        data: sizes.map((n, i) => ({ x: n, y: timesAvg[i] })),
-                        borderColor: '#f4b841',
-                        backgroundColor: 'transparent',
-                        pointRadius: 4,
-                        pointBackgroundColor: '#f4b841',
-                        tension: 0.35,
-                        fill: false,
-                    },
-                    {
-                        label: 'Worst Case (ms)',
-                        data: sizes.map((n, i) => ({ x: n, y: timesWorst[i] })),
-                        borderColor: '#ef4444',
-                        backgroundColor: 'transparent',
-                        pointRadius: 4,
-                        pointBackgroundColor: '#ef4444',
-                        tension: 0.35,
-                        fill: false,
-                    }
-                ]
+    chartInstance = new Chart(canvas, {
+      type: "line",
+      data: {
+        datasets: [
+          {
+            label: "Best Case (ms)",
+            data: sizes.map((n, i) => ({ x: n, y: timesBest[i] })),
+            borderColor: "#22c55e",
+            backgroundColor: "transparent",
+            pointRadius: 4,
+            pointBackgroundColor: "#22c55e",
+            tension: 0.35,
+            fill: false,
+          },
+          {
+            label: "Average Case (ms)",
+            data: sizes.map((n, i) => ({ x: n, y: timesAvg[i] })),
+            borderColor: "#f4b841",
+            backgroundColor: "transparent",
+            pointRadius: 4,
+            pointBackgroundColor: "#f4b841",
+            tension: 0.35,
+            fill: false,
+          },
+          {
+            label: "Worst Case (ms)",
+            data: sizes.map((n, i) => ({ x: n, y: timesWorst[i] })),
+            borderColor: "#ef4444",
+            backgroundColor: "transparent",
+            pointRadius: 4,
+            pointBackgroundColor: "#ef4444",
+            tension: 0.35,
+            fill: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        parsing: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: "#c7b48b",
+              font: { family: "JetBrains Mono", size: 11 },
+              padding: 15,
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                parsing: false,
-                plugins: {
-                    legend: {
-                        labels: { 
-                            color: '#c7b48b', 
-                            font: { family: 'JetBrains Mono', size: 11 },
-                            padding: 15
-                        }
-                    },
-                    filler: { propagate: false }
-                },
-                scales: {
-                    x: {
-                        type: 'linear',
-                        title: { display: true, text: 'Input size (n)', color: '#7c7468' },
-                        ticks: { color: '#7c7468' },
-                        grid: { color: 'rgba(255,255,255,0.04)' }
-                    },
-                    y: {
-                        title: { display: true, text: 'Time (ms)', color: '#7c7468' },
-                        ticks: { color: '#7c7468' },
-                        grid: { color: 'rgba(255,255,255,0.04)' }
-                    }
-                }
-            }
-        });
-    }
-
-    // Tabs
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const targetTab = tab.dataset.tab;
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            tabPanels.forEach(panel => {
-                panel.classList.toggle('active', panel.id === targetTab);
-            });
-        });
+          },
+          filler: { propagate: false },
+        },
+        scales: {
+          x: {
+            type: "linear",
+            title: { display: true, text: "Input size (n)", color: "#7c7468" },
+            ticks: { color: "#7c7468" },
+            grid: { color: "rgba(255,255,255,0.04)" },
+          },
+          y: {
+            title: { display: true, text: "Time (ms)", color: "#7c7468" },
+            ticks: { color: "#7c7468" },
+            grid: { color: "rgba(255,255,255,0.04)" },
+          },
+        },
+      },
     });
+  }
 
-    // Run
-    runBtn.addEventListener('click', async () => {
-        const algorithm = algorithmSelect.value;
-        const code = codemirrorEditor.getValue();
-        const input = inputData.value;
+  // Tabs
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const targetTab = tab.dataset.tab;
+      tabs.forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      tabPanels.forEach((panel) => {
+        panel.classList.toggle("active", panel.id === targetTab);
+      });
+    });
+  });
 
-        runBtn.innerHTML = '<span class="spinner"></span> Running...';
-        runBtn.disabled = true;
+  // Run
+  runBtn.addEventListener("click", async () => {
+    const algorithm = algorithmSelect.value;
+    const code = codemirrorEditor.getValue();
+    const input = inputData.value;
 
-        try {
-            const result = await eel.run_algorithm(algorithm, code, input)();
-            
-            if (result.error) {
-                // Show error in Analysis tab
-                const content = document.getElementById('analysis-content');
-                content.innerHTML = `
+    runBtn.innerHTML = '<span class="spinner"></span> Running...';
+    runBtn.disabled = true;
+
+    try {
+      const result = await eel.run_algorithm(algorithm, code, input)();
+
+      if (result.error) {
+        // Show error in Analysis tab
+        const content = document.getElementById("analysis-content");
+        content.innerHTML = `
                     <div style="padding: 40px 20px; text-align: center;">
                         <div style="font-size: 20px; color: #ef4444; font-weight: bold; margin-bottom: 12px;">Error</div>
                         <div style="color: #c7b48b; font-family: 'JetBrains Mono';">${result.error}</div>
                     </div>
                 `;
-                document.querySelector('[data-tab="analysis"]').click();
-                statusText.textContent = `Error: ${result.error}`;
-                complexityBadge.textContent = 'ERR';
-            } else {
-                // Update badge and status
-                complexityBadge.textContent = result.measured;
-                statusText.textContent = `Detected: ${result.measured} (${Math.round(result.confidence)}%) — Static predicted: ${result.static}`;
-                
-                // Render Analysis tab
-                renderAnalysis(result);
-                document.querySelector('[data-tab="analysis"]').click();
-                
-                // Render AI Agent tab in background
-                renderAIAgent(result.explanation);
-            }
-        } catch (error) {
-            const content = document.getElementById('analysis-content');
-            content.innerHTML = `
+        document.querySelector('[data-tab="analysis"]').click();
+        statusText.textContent = `Error: ${result.error}`;
+        complexityBadge.textContent = "ERR";
+      } else {
+        // Update badge and status
+        complexityBadge.textContent = result.measured;
+        statusText.textContent = `Detected: ${result.measured} (${Math.round(result.confidence)}%) — Static predicted: ${result.static}`;
+
+        // Render Analysis tab
+        renderAnalysis(result);
+        document.querySelector('[data-tab="analysis"]').click();
+
+        // ── Split the AI explanation into Explainer + Optimizer ──
+        const { explainerText, optimizerText } = splitExplanation(
+          result.explanation,
+        );
+
+        renderExplainerOutput(explainerText);
+
+        if (optimizerText) {
+          renderOptimizerOutput(optimizerText);
+        } else {
+          renderOptimizerOutput(
+            "Run the algorithm first to generate optimization suggestions.",
+          );
+        }
+      }
+    } catch (error) {
+      const content = document.getElementById("analysis-content");
+      content.innerHTML = `
                 <div style="padding: 40px 20px; text-align: center;">
                     <div style="font-size: 20px; color: #ef4444; font-weight: bold; margin-bottom: 12px;">Error</div>
                     <div style="color: #c7b48b; font-family: 'JetBrains Mono';">${error.message}</div>
                 </div>
             `;
-            statusText.textContent = 'Error';
-            complexityBadge.textContent = 'ERR';
-        } finally {
-            runBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9-5.5-9-5.5z"/></svg> Run';
-            runBtn.disabled = false;
-        }
-    });
+      statusText.textContent = "Error";
+      complexityBadge.textContent = "ERR";
+    } finally {
+      runBtn.innerHTML =
+        '<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9-5.5-9-5.5z"/></svg> Run';
+      runBtn.disabled = false;
+    }
+  });
 
-    const quitBtn = document.getElementById('quit-btn');
-    if (quitBtn) {
-        quitBtn.addEventListener('click', () => {
-            try {
-                window.close();
-            } catch (error) {
-                console.warn('Quit request failed', error);
-            }
-            app.classList.add('hidden');
-            statusText.textContent = 'Quit';
-        });
+  const scanBugsBtn = document.getElementById("scan-bugs-btn");
+  const optimizeBtn = document.getElementById("optimize-btn");
+
+  scanBugsBtn.addEventListener("click", async () => {
+    const code = codemirrorEditor.getValue();
+    const report = await eel.scan_bugs(code)();
+    renderBugReport(report);
+    document.querySelector('[data-tab="bug-detector"]').click();
+  });
+
+  optimizeBtn.addEventListener("click", async () => {
+    const code = codemirrorEditor.getValue();
+    const report = await eel.scan_bugs(code)();
+    renderBugReport(report);
+
+    if (!report.ok) {
+      renderOptimizerOutput(
+        "I can't optimize the code because it has bugs. Please fix the issues in Bug Detector first.",
+      );
+      document.querySelector('[data-tab="optimizer"]').click();
+      return;
     }
 
-    // Resizer - drag to resize panes
-    let isResizing = false;
-    resizer.addEventListener('mousedown', (e) => {
-        isResizing = true;
-        document.body.style.cursor = 'col-resize';
-        document.body.style.userSelect = 'none';
-    });
+    renderOptimizerOutput(
+      '<span class="typing-dot">·</span><span class="typing-dot">·</span><span class="typing-dot">·</span>',
+    );
+    document.querySelector('[data-tab="optimizer"]').click();
+    const optimized = await eel.get_optimization(code)();
+    renderOptimizerOutput(optimized);
+  });
 
-    document.addEventListener('mousemove', (e) => {
-        if (!isResizing) return;
-        const container = document.querySelector('.split-pane');
-        const containerRect = container.getBoundingClientRect();
-        let newWidth = e.clientX - containerRect.left;
-        newWidth = Math.max(300, Math.min(newWidth, containerRect.width - 400));
-        leftPane.style.width = newWidth + 'px';
-    });
+  // Chat functionality
+  const chatInput = document.getElementById("chat-input");
+  const sendChatBtn = document.getElementById("send-chat-btn");
+  const chatMessages = document.getElementById("chat-messages");
 
-    document.addEventListener('mouseup', () => {
-        isResizing = false;
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-    });
+  function addChatMessage(content, isUser) {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `chat-message ${isUser ? "user" : "ai"}`;
+    
+    const avatar = document.createElement("div");
+    avatar.className = "chat-avatar";
+    avatar.textContent = isUser ? "U" : "AI";
+    
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble";
+    bubble.innerHTML = content.replace(/\n/g, "<br>");
+    
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(bubble);
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
 
-    // Splash
-    setTimeout(() => {
-        splash.classList.add('fade-out');
-        app.classList.remove('hidden');
-        codemirrorEditor.refresh();
-        setTimeout(() => splash.remove(), 500);
-    }, 2000);
+  function showTyping() {
+    const typingDiv = document.createElement("div");
+    typingDiv.className = "chat-message ai";
+    typingDiv.id = "chat-typing";
+    typingDiv.innerHTML = `
+      <div class="chat-avatar">AI</div>
+      <div class="chat-typing">
+        <span></span><span></span><span></span>
+      </div>
+    `;
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function hideTyping() {
+    const typing = document.getElementById("chat-typing");
+    if (typing) typing.remove();
+  } 
+
+  async function sendChatMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    chatInput.value = "";
+    addChatMessage(message, true);
+    
+    sendChatBtn.disabled = true;
+    showTyping();
+
+    try {
+      const response = await eel.chat_with_ai(message)();
+      hideTyping();
+      addChatMessage(response, false);
+    } catch (error) {
+      hideTyping();
+      addChatMessage("Sorry, I encountered an error. Please try again.", false);
+    } finally {
+      sendChatBtn.disabled = false;
+      chatInput.focus();
+    }
+  }
+
+  sendChatBtn.addEventListener("click", sendChatMessage);
+  
+  chatInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      sendChatMessage();
+    }
+  });
+
+  // Show empty chat state initially
+  if (!chatMessages.innerHTML) {
+    chatMessages.innerHTML = `
+      <div class="chat-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+        <div>Start a conversation with AlgoSmith AI</div>
+        <div style="font-size: 12px; margin-top: 8px;">Ask about algorithms, code, or programming</div>
+      </div>
+    `;
+  }
+
+  const quitBtn = document.getElementById("quit-btn");
+  if (quitBtn) {
+    quitBtn.addEventListener("click", () => {
+      try {
+        window.close();
+      } catch (error) {
+        console.warn("Quit request failed", error);
+      }
+      app.classList.add("hidden");
+      statusText.textContent = "Quit";
+    });
+  }
+
+  // Resizer - drag to resize panes
+  let isResizing = false;
+  resizer.addEventListener("mousedown", (e) => {
+    isResizing = true;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!isResizing) return;
+    const container = document.querySelector(".split-pane");
+    const containerRect = container.getBoundingClientRect();
+    let newWidth = e.clientX - containerRect.left;
+    newWidth = Math.max(300, Math.min(newWidth, containerRect.width - 400));
+    leftPane.style.width = newWidth + "px";
+  });
+
+  document.addEventListener("mouseup", () => {
+    isResizing = false;
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+  });
+
+  // Splash
+  setTimeout(() => {
+    splash.classList.add("fade-out");
+    app.classList.remove("hidden");
+    codemirrorEditor.refresh();
+    setTimeout(() => splash.remove(), 500);
+  }, 2000);
 });

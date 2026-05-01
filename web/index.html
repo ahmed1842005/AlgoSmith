@@ -94,9 +94,12 @@
 
             <!-- RIGHT: ANALYSIS -->
             <div class="pane right-pane">
-                <div class="tabs">
+                <div class="tabs ai-main-tabs">
                     <button class="tab active" data-tab="analysis">Analysis</button>
-                    <button class="tab" data-tab="ai-agent">AI Agent</button>
+                    <button class="tab" data-tab="explainer">Explainer</button>
+                    <button class="tab" data-tab="optimizer">Optimizer</button>
+                    <button class="tab" data-tab="bug-detector">Bug Detector</button>
+                    <button class="tab" data-tab="chat">Chat</button>
                 </div>
                 <div class="tab-content">
                     <div id="analysis" class="tab-panel active">
@@ -106,15 +109,51 @@
                             </div>
                         </div>
                     </div>
-                    <div id="ai-agent" class="tab-panel">
-                        <div id="ai-agent-content" style="padding: 20px; overflow-y: auto; height: 100%;">
-                            <div id="ai-agent-output" class="ai-agent-output">
-                                <span class="typing-dot">·</span><span class="typing-dot">·</span><span class="typing-dot">·</span>
+                    <div id="explainer" class="tab-panel">
+                        <div style="padding: 20px; overflow-y: auto; height: 100%;">
+                            <div id="explainer-output" class="ai-agent-output professional-card">
+                                <div class="card-title">Complexity Explanation</div>
+                                <div class="card-body muted">Run an algorithm to generate a detailed explanation.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="optimizer" class="tab-panel">
+                        <div style="padding: 20px; overflow-y: auto; height: 100%;">
+                            <div class="ai-tools">
+                                <button id="optimize-btn" class="run-btn">Optimize</button>
+                            </div>
+                            <div id="optimizer-output" class="ai-agent-output professional-card">
+                                <div class="card-title">Optimizer</div>
+                                <div class="card-body muted">Optimization output will appear here.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="bug-detector" class="tab-panel">
+                        <div style="padding: 20px; overflow-y: auto; height: 100%;">
+                            <div class="ai-tools">
+                                <button id="scan-bugs-btn" class="run-btn secondary-btn">Scan Bugs</button>
+                            </div>
+                            <div id="bug-detector-output" class="ai-agent-output professional-card">
+                                <div class="card-title">Bug Detector</div>
+                                <div class="card-body muted">Scan your code for issues and recommended fixes.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="chat" class="tab-panel">
+                        <div class="chat-container">
+                            <div id="chat-messages" class="chat-messages"></div>
+                            <div class="chat-input-area">
+                                <input type="text" id="chat-input" class="chat-input" placeholder="Ask me anything about algorithms, code, or programming...">
+                                <button id="send-chat-btn" class="send-chat-btn">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
         </div>
 
         <!-- STATUS BAR -->
