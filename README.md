@@ -113,9 +113,9 @@ python3 main.py
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/ahmed1842005">
-        <img src="https://github.com/ahmed1842005.png" width="150" style="border-radius:50%"/><br/>
-        <sub>ahmed1842005</sub>
+      <a href="https://github.com/dravdzo">
+        <img src="https://github.com/dravdzo.png" width="150" style="border-radius:50%"/><br/>
+        <sub>dravdzo</sub>
       </a>
     </td>
     <td align="center">
